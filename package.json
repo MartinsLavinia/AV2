@@ -1,0 +1,38 @@
+{
+  "name": "av2",
+  "version": "1.0.0",
+  "description": "\"# AV2\"",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "repository": {
+    "type": "module",
+    "url": "git+https://github.com/MartinsLavinia/AV2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MartinsLavinia/AV2/issues"
+  },
+  "homepage": "https://github.com/MartinsLavinia/AV2#readme",
+  "dependencies": {
+    "@fastify/cors": "^11.3.1",
+    "@fastify/jwt": "^10.2.5",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "dotenv": "^18.0.8",
+    "fastify": "^5.12.7",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "prisma": "^7.10.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
