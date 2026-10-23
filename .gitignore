@@ -23,3 +23,6 @@ Thumbs.db
 .claude/
 .windsurf/
 skills-lock.json
+
+# Prisma Client gerado
+/src/generated/prisma/

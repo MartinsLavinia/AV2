@@ -64,3 +64,13 @@ export type Equipamento = Prisma.EquipamentoModel
  * 
  */
 export type Movimentacao = Prisma.MovimentacaoModel
+/**
+ * Model Usuario
+ * 
+ */
+export type Usuario = Prisma.UsuarioModel
+/**
+ * Model ConfiguracaoSistema
+ * 
+ */
+export type ConfiguracaoSistema = Prisma.ConfiguracaoSistemaModel

@@ -55,7 +55,9 @@ export const ModelName = {
   Contrato: 'Contrato',
   Lote: 'Lote',
   Equipamento: 'Equipamento',
-  Movimentacao: 'Movimentacao'
+  Movimentacao: 'Movimentacao',
+  Usuario: 'Usuario',
+  ConfiguracaoSistema: 'ConfiguracaoSistema'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -148,6 +150,31 @@ export const MovimentacaoScalarFieldEnum = {
 } as const
 
 export type MovimentacaoScalarFieldEnum = (typeof MovimentacaoScalarFieldEnum)[keyof typeof MovimentacaoScalarFieldEnum]
+
+
+export const UsuarioScalarFieldEnum = {
+  id: 'id',
+  nomeCompleto: 'nomeCompleto',
+  email: 'email',
+  senhaHash: 'senhaHash',
+  papel: 'papel',
+  ativo: 'ativo',
+  administradorInicial: 'administradorInicial',
+  dataCadastro: 'dataCadastro',
+  versao: 'versao'
+} as const
+
+export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const ConfiguracaoSistemaScalarFieldEnum = {
+  id: 'id',
+  aliquotaImposto: 'aliquotaImposto',
+  coeficienteDepreciacaoAnual: 'coeficienteDepreciacaoAnual',
+  atualizadoEm: 'atualizadoEm'
+} as const
+
+export type ConfiguracaoSistemaScalarFieldEnum = (typeof ConfiguracaoSistemaScalarFieldEnum)[keyof typeof ConfiguracaoSistemaScalarFieldEnum]
 
 
 export const SortOrder = {

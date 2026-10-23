@@ -261,6 +261,23 @@ export type EnumStatusRastreamentoWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumStatusRastreamentoFilter<$PrismaModel>
 }
 
+export type EnumPapelUsuarioFilter<$PrismaModel = never> = {
+  equals?: $Enums.PapelUsuario | Prisma.EnumPapelUsuarioFieldRefInput<$PrismaModel>
+  in?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel> | $Enums.PapelUsuario
+}
+
+export type EnumPapelUsuarioWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PapelUsuario | Prisma.EnumPapelUsuarioFieldRefInput<$PrismaModel>
+  in?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPapelUsuarioWithAggregatesFilter<$PrismaModel> | $Enums.PapelUsuario
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -502,6 +519,23 @@ export type NestedEnumStatusRastreamentoWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumStatusRastreamentoFilter<$PrismaModel>
   _max?: Prisma.NestedEnumStatusRastreamentoFilter<$PrismaModel>
+}
+
+export type NestedEnumPapelUsuarioFilter<$PrismaModel = never> = {
+  equals?: $Enums.PapelUsuario | Prisma.EnumPapelUsuarioFieldRefInput<$PrismaModel>
+  in?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel> | $Enums.PapelUsuario
+}
+
+export type NestedEnumPapelUsuarioWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PapelUsuario | Prisma.EnumPapelUsuarioFieldRefInput<$PrismaModel>
+  in?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PapelUsuario[] | Prisma.ListEnumPapelUsuarioFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPapelUsuarioWithAggregatesFilter<$PrismaModel> | $Enums.PapelUsuario
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPapelUsuarioFilter<$PrismaModel>
 }
 
 
