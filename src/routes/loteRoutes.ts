@@ -7,6 +7,7 @@ const schemaEdicao = {
   type: "object", additionalProperties: false, required: ["versao"], minProperties: 2,
   properties: {
     notaFiscal: { type: "string", minLength: 1, maxLength: 100 },
+    //Sofrimento
     transportadora: { type: "string", minLength: 1, maxLength: 160 },
     dataEntrada: { type: "string", minLength: 10 },
     observacoes: { type: "string", maxLength: 2000 },
