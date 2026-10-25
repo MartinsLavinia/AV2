@@ -1,0 +1,54 @@
+name: Testes Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: greencode_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d greencode_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/greencode_test?schema=public
+      JOURNEY_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/greencode_test?schema=public
+      JWT_SECRET: ci-only-secret-key-for-automated-tests
+      SEED_DEMO_DATA: "false"
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar o cliente Prisma
+        run: npm exec -- prisma generate
+
+      - name: Compilar TypeScript
+        run: npm run build
+
+      - name: Executar teste de jornada
+        run: npm run test:journey
