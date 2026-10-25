@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { EstadoFisico, StatusRastreamento, TipoEquipamento } from "../generated/prisma/enums.js";
 import {
   EquipamentoNaoEncontradoError,
+  EquipamentoComMovimentacoesError,
   EquipamentoRepository,
   ehConflitoUnico,
   VersaoEquipamentoConflitanteError,
@@ -27,11 +28,55 @@ export type DadosAlteracaoEstadoFisico = {
   justificativa?: string;
   versao: number;
 };
+export type DadosEdicaoEquipamento = {
+  tipo?: TipoEquipamento; marca?: string; modelo?: string; anoFabricacao?: number; pesoQuilogramas?: number; versao: number;
+};
 
 export class EquipamentoService {
   constructor(private readonly equipamentos = new EquipamentoRepository()) {}
 
   listar() { return this.equipamentos.listar(); }
+
+  async obter(identificador: string) {
+    if (typeof identificador !== "string" || !identificador.trim()) throw new ErroValidacaoEquipamento("ID ou código de barras é obrigatório.");
+    const equipamento = await this.equipamentos.buscarPorIdentificador(identificador.trim());
+    if (!equipamento) throw new EquipamentoNaoEncontradoError();
+    return equipamento;
+  }
+
+  async editar(identificador: string, dados: DadosEdicaoEquipamento) {
+    if (!dados || typeof dados !== "object" || Array.isArray(dados)) throw new ErroValidacaoEquipamento("O corpo da requisição deve ser um objeto JSON.");
+    const atual = await this.obterParaAtualizar(identificador, dados.versao);
+    const { versao, ...campos } = dados;
+    if (Object.keys(campos).length === 0) throw new ErroValidacaoEquipamento("Informe ao menos um campo para alterar.");
+    const alteracoes: { tipo?: TipoEquipamento; marca?: string; modelo?: string; anoFabricacao?: number; pesoQuilogramas?: number } = {};
+    if (campos.tipo !== undefined) {
+      if (!Object.values(TipoEquipamento).includes(campos.tipo)) throw new ErroValidacaoEquipamento("Tipo de equipamento inválido.");
+      alteracoes.tipo = campos.tipo;
+    }
+    if (campos.marca !== undefined) alteracoes.marca = this.obrigatorio(campos.marca, "Marca");
+    if (campos.modelo !== undefined) alteracoes.modelo = this.obrigatorio(campos.modelo, "Modelo");
+    if (campos.anoFabricacao !== undefined) {
+      const anoAtual = new Date().getFullYear();
+      if (!Number.isInteger(campos.anoFabricacao) || campos.anoFabricacao < 1970 || campos.anoFabricacao > anoAtual) throw new ErroValidacaoEquipamento(`Ano de fabricação deve ser um número inteiro entre 1970 e ${anoAtual}.`);
+      alteracoes.anoFabricacao = campos.anoFabricacao;
+    }
+    if (campos.pesoQuilogramas !== undefined) {
+      if (typeof campos.pesoQuilogramas !== "number" || !Number.isFinite(campos.pesoQuilogramas) || campos.pesoQuilogramas <= 0) throw new ErroValidacaoEquipamento("Peso deve ser um número maior que zero.");
+      alteracoes.pesoQuilogramas = campos.pesoQuilogramas;
+    }
+    return this.equipamentos.editar(atual.id, versao, alteracoes);
+  }
+
+  async excluir(identificador: string, versaoInformada: unknown) {
+    if (typeof identificador !== "string" || !identificador.trim()) throw new ErroValidacaoEquipamento("ID ou código de barras é obrigatório.");
+    const atual = await this.obterParaAtualizar(identificador, versaoInformada);
+    try { await this.equipamentos.excluir(atual.id, atual.versao); }
+    catch (erro) {
+      if (erro instanceof EquipamentoComMovimentacoesError) throw new EquipamentoComMovimentacoesError(erro.quantidade);
+      throw erro;
+    }
+  }
 
   async criar(dados: DadosNovoEquipamento) {
     if (!dados || typeof dados !== "object" || Array.isArray(dados)) {
@@ -207,7 +252,7 @@ export class TransicaoTriagemInvalidaError extends Error {}
 export class DesmonteAntesDaTriagemCompletaError extends Error {}
 export class TransicaoStatusRastreamentoInvalidaError extends Error {}
 export class JustificativaEstadoFisicoObrigatoriaError extends Error {}
-export { EquipamentoNaoEncontradoError, VersaoEquipamentoConflitanteError };
+export { EquipamentoNaoEncontradoError, EquipamentoComMovimentacoesError, VersaoEquipamentoConflitanteError };
 
 const TRANSICOES_STATUS: Record<StatusRastreamento, StatusRastreamento[]> = {
   [StatusRastreamento.AGUARDANDO_TRIAGEM]: [],

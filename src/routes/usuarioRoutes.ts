@@ -63,6 +63,7 @@ export async function usuarioRoutes(app: FastifyInstance) {
   app.post("/auth/login", { schema: { body: schemaCredenciais } }, controller.login);
   app.post("/usuarios", { schema: { body: schemaNovoUsuario }, preHandler: somenteAdministrador }, controller.criar);
   app.get("/usuarios", { preHandler: somenteAdministrador }, controller.listar);
+  app.get("/usuarios/:id", { preHandler: somenteAdministrador }, controller.obter);
   app.patch("/usuarios/:id", { schema: { body: schemaEdicaoUsuario }, preHandler: somenteAdministrador }, controller.editar);
   app.delete("/usuarios/:id", { preHandler: somenteAdministrador }, controller.excluir);
 }

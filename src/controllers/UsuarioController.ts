@@ -69,6 +69,17 @@ export class UsuarioController {
     return reply.code(200).send({ usuarios: usuarios.map(usuarioPublico) });
   };
 
+  obter = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const usuario = await this.usuarios.obterUsuario(id);
+      if (!usuario) return reply.code(404).send({ mensagem: "Usuário não encontrado." });
+      return reply.code(200).send({ usuario: usuarioPublico(usuario) });
+    } catch (erro) {
+      return responderErro(reply, erro);
+    }
+  };
+
   editar = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { id } = request.params as { id: string };

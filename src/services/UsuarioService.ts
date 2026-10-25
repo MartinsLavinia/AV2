@@ -11,6 +11,7 @@ import {
 
 const CUSTO_BCRYPT = 12;
 const TAMANHO_MINIMO_SENHA = 8;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export type DadosCadastroUsuario = {
   nomeCompleto: string;
@@ -69,6 +70,11 @@ export class UsuarioService {
 
   async listarUsuarios() {
     return this.usuarios.listar();
+  }
+
+  async obterUsuario(id: string) {
+    if (!UUID.test(id)) throw new ErroValidacaoUsuario("Identificador do usuário inválido.");
+    return this.usuarios.buscarPorId(id);
   }
 
   async editarUsuario(

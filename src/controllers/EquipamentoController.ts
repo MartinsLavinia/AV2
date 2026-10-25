@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   DesmonteAntesDaTriagemCompletaError,
   EquipamentoNaoEncontradoError,
+  EquipamentoComMovimentacoesError,
   ConflitoCadastroEquipamentoError,
   EquipamentoService,
   ErroValidacaoEquipamento,
@@ -12,6 +13,7 @@ import {
   VersaoEquipamentoConflitanteError,
   type DadosAcaoTriagem,
   type DadosAlteracaoEstadoFisico,
+  type DadosEdicaoEquipamento,
   type DadosMovimentacaoEquipamento,
   type DadosNovoEquipamento,
 } from "../services/EquipamentoService.js";
@@ -24,6 +26,15 @@ export class EquipamentoController {
     catch (erro) { console.error("Erro ao listar equipamentos:", erro); return reply.code(500).send({ mensagem: "Não foi possível listar os equipamentos." }); }
   };
 
+  obter = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { identificador } = request.params as { identificador: string };
+      return reply.code(200).send(await this.equipamentos.obter(identificador));
+    } catch (erro) {
+      return responderErroOperacao(reply, erro, "consultar o equipamento");
+    }
+  };
+
   criar = async (request: FastifyRequest, reply: FastifyReply) => {
     try { return reply.code(201).send(await this.equipamentos.criar(request.body as DadosNovoEquipamento)); }
     catch (erro) {
@@ -32,6 +43,26 @@ export class EquipamentoController {
       if (erro instanceof ConflitoCadastroEquipamentoError) return reply.code(409).send({ mensagem: "Conflito ao gerar código ou posição do equipamento. Tente novamente." });
       console.error("Erro ao criar equipamento:", erro);
       return reply.code(500).send({ mensagem: "Não foi possível cadastrar o equipamento." });
+    }
+  };
+
+  editar = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { identificador } = request.params as { identificador: string };
+      return reply.code(200).send(await this.equipamentos.editar(identificador, request.body as DadosEdicaoEquipamento));
+    } catch (erro) {
+      return responderErroOperacao(reply, erro, "editar o equipamento");
+    }
+  };
+
+  excluir = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { identificador } = request.params as { identificador: string };
+      const { versao } = request.query as { versao: number };
+      await this.equipamentos.excluir(identificador, versao);
+      return reply.code(204).send();
+    } catch (erro) {
+      return responderErroOperacao(reply, erro, "excluir o equipamento");
     }
   };
 
@@ -95,6 +126,7 @@ function responderErroOperacao(reply: FastifyReply, erro: unknown, operacao: str
     return reply.code(400).send({ mensagem: "Informe uma justificativa ao piorar o estado físico em duas ou mais categorias." });
   }
   if (erro instanceof EquipamentoNaoEncontradoError) return reply.code(404).send({ mensagem: "Equipamento não encontrado." });
+  if (erro instanceof EquipamentoComMovimentacoesError) return reply.code(409).send({ mensagem: `Não é possível excluir: o equipamento possui ${erro.quantidade} movimentação(ões) registrada(s).` });
   if (erro instanceof VersaoEquipamentoConflitanteError) {
     return reply.code(409).send({ mensagem: "O equipamento foi alterado por outra operação. Consulte-o novamente e tente com a versão atual." });
   }
