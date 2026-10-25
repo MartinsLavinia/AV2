@@ -66,6 +66,15 @@ PORT=3000
 
 `JWT_SECRET` deve ser uma chave aleatória mantida fora do controle de versão. Não reutilize a chave de exemplo em produção.
 
+Gere uma chave aleatória no terminal, dentro da pasta do projeto:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Copie a chave gerada e cole no .env
+
+
 Instale dependências, gere o cliente Prisma e aplique as migrações:
 
 ```bash
@@ -106,6 +115,15 @@ As contas `operador.demo@greencode.local`, `gestor.demo@greencode.local` e `audi
 - [Referência da API](API.md): rotas, permissões, corpos de requisição e respostas esperadas.
 - [Decisões técnicas e regras de negócio](DECISOES_TECNICAS.md): justificativas, trade-offs e comportamentos adotados.
 
+## Validação automatizada em Linux
+
+O workflow [`testes-linux.yml`](../.github/workflows/testes-linux.yml) executa no GitHub Actions em `ubuntu-24.04`. Ele inicia um PostgreSQL temporário e roda `npm ci`, a geração do cliente Prisma, a compilação TypeScript e o teste de jornada (`npm run test:journey`). O teste de jornada cria e remove um schema temporário próprio.
+
+A compatibilidade automatizada com Linux fica confirmada quando uma execução desse workflow termina com sucesso (check verde) na aba **Actions** do GitHub. O workflow está configurado, e a validação no runner Linux foi apresentada como concluída.
 ## Compatibilidade e encerramento
 
 A AV2 solicita compatibilidade com Windows 10 ou superior e Ubuntu 24.04.03 ou superior (incluindo distribuições derivadas). O servidor trata `SIGINT` e `SIGTERM`: fecha o Fastify para novas conexões, aguarda requisições em andamento e então desconecta o Prisma.
+
+## Autoria
+
+Desenvolvido por **Lavínia Martins** como parte da atividade AV2 de Técnicas de Programação I.
